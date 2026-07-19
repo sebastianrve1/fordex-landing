@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { TrendingUp } from "lucide-react";
 
 const barsData = [30, 55, 40, 70, 50, 85, 60];
 
@@ -50,38 +51,45 @@ export function MiniBars() {
 }
 
 export function MiniRadial({ value = 72 }: { value?: number }) {
-  const circumference = 2 * Math.PI * 26;
+  const circumference = 2 * Math.PI * 22;
   const offset = circumference - (value / 100) * circumference;
   return (
-    <div className="flex h-[50px] items-center justify-center">
-      <svg width="60" height="60" viewBox="0 0 60 60">
-        <circle cx="30" cy="30" r="26" fill="none" stroke="#1B2436" strokeWidth="5" />
+    <div className="flex h-[64px] items-center gap-4">
+      <svg width="52" height="52" viewBox="0 0 52 52" className="shrink-0">
+        <circle cx="26" cy="26" r="22" fill="none" stroke="#1B2436" strokeWidth="4.5" />
         <motion.circle
-          cx="30"
-          cy="30"
-          r="26"
+          cx="26"
+          cy="26"
+          r="22"
           fill="none"
           stroke="#3B82F6"
-          strokeWidth="5"
+          strokeWidth="4.5"
           strokeLinecap="round"
           strokeDasharray={circumference}
           initial={{ strokeDashoffset: circumference }}
           whileInView={{ strokeDashoffset: offset }}
           viewport={{ once: true }}
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          transform="rotate(-90 30 30)"
+          transform="rotate(-90 26 26)"
         />
         <text
-          x="30"
-          y="34"
+          x="26"
+          y="30"
           textAnchor="middle"
-          fontSize="13"
+          fontSize="12"
           fill="#ffffff"
           fontWeight="600"
         >
           {value}%
         </text>
       </svg>
+      <div className="min-w-0">
+        <p className="truncate text-xs text-gray-soft">Conversión de campañas</p>
+        <p className="mt-1 flex items-center gap-1 text-sm font-medium text-primary-bright">
+          <TrendingUp className="h-3.5 w-3.5" />
+          +8% vs. mes anterior
+        </p>
+      </div>
     </div>
   );
 }
@@ -136,15 +144,27 @@ export function MiniDots() {
 
 export function MiniStats() {
   const stats = [
-    { label: "OEE", value: "94%" },
-    { label: "Uptime", value: "99.8%" },
+    { label: "OEE", value: "94%", bar: 94 },
+    { label: "Uptime", value: "99.8%", bar: 99 },
+    { label: "Producción", value: "+18%", bar: 78 },
   ];
   return (
-    <div className="flex h-[50px] items-center gap-4">
-      {stats.map((s) => (
-        <div key={s.label}>
-          <p className="text-base font-semibold text-white">{s.value}</p>
-          <p className="text-[10px] text-gray-soft">{s.label}</p>
+    <div className="flex h-[64px] flex-col justify-center gap-2">
+      {stats.map((s, i) => (
+        <div key={s.label} className="flex items-center gap-2.5">
+          <span className="w-16 shrink-0 text-[10px] text-gray-soft">{s.label}</span>
+          <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/[0.06]">
+            <motion.div
+              initial={{ width: 0 }}
+              whileInView={{ width: `${s.bar}%` }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="h-full rounded-full bg-gradient-to-r from-primary to-primary-bright"
+            />
+          </div>
+          <span className="w-11 shrink-0 text-right text-[11px] font-medium text-white">
+            {s.value}
+          </span>
         </div>
       ))}
     </div>
