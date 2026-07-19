@@ -11,7 +11,7 @@ const config: Config = {
       center: true,
       padding: "1.5rem",
       screens: {
-        "2xl": "1400px",
+        "2xl": "1280px",
       },
     },
     extend: {
@@ -33,9 +33,9 @@ const config: Config = {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
       },
       fontSize: {
-        "display-xl": ["clamp(2.5rem, 4.2vw, 4.75rem)", { lineHeight: "1.08", letterSpacing: "-0.025em" }],
-        "display-lg": ["clamp(2.25rem, 3.6vw, 3.75rem)", { lineHeight: "1.1", letterSpacing: "-0.025em" }],
-        "display-md": ["clamp(1.875rem, 2.8vw, 2.75rem)", { lineHeight: "1.15", letterSpacing: "-0.02em" }],
+        "display-xl": ["clamp(2.75rem, 5.4vw, 5.25rem)", { lineHeight: "1.05", letterSpacing: "-0.03em" }],
+        "display-lg": ["clamp(2.5rem, 5vw, 4.5rem)", { lineHeight: "1.05", letterSpacing: "-0.03em" }],
+        "display-md": ["clamp(2rem, 3.5vw, 3rem)", { lineHeight: "1.1", letterSpacing: "-0.02em" }],
       },
       borderRadius: {
         "4xl": "2rem",
