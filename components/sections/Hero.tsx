@@ -20,8 +20,8 @@ export function Hero() {
       <GlowOrb color="primary" className="left-1/2 top-[-200px] h-[600px] w-[600px] -translate-x-1/2" />
       <GlowOrb color="bright" className="right-[-100px] top-[300px] h-[400px] w-[400px]" />
 
-      <div className="container relative grid grid-cols-1 items-center gap-16 lg:grid-cols-12 lg:gap-8">
-        <div className="lg:col-span-6">
+      <div className="container relative grid grid-cols-1 items-center gap-16 lg:grid-cols-12 lg:gap-6">
+        <div className="lg:col-span-5">
           <FadeIn>
             <Eyebrow>Ingeniería de software empresarial</Eyebrow>
           </FadeIn>
@@ -69,7 +69,7 @@ export function Hero() {
           </FadeIn>
         </div>
 
-        <div className="lg:col-span-6">
+        <div className="lg:col-span-7">
           <FadeIn delay={0.3} y={40}>
             <HeroDashboard />
           </FadeIn>
