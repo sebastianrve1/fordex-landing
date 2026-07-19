@@ -35,7 +35,7 @@ export function MiniLineChart() {
 
 export function MiniBars() {
   return (
-    <div className="flex h-[50px] items-end gap-1.5">
+    <div className="flex h-[50px] w-full items-end gap-1.5">
       {barsData.map((h, i) => (
         <motion.div
           key={i}
@@ -54,7 +54,7 @@ export function MiniRadial({ value = 72 }: { value?: number }) {
   const circumference = 2 * Math.PI * 22;
   const offset = circumference - (value / 100) * circumference;
   return (
-    <div className="flex h-[64px] items-center gap-4">
+    <div className="flex h-[64px] w-full items-center gap-4">
       <svg width="52" height="52" viewBox="0 0 52 52" className="shrink-0">
         <circle cx="26" cy="26" r="22" fill="none" stroke="#1B2436" strokeWidth="4.5" />
         <motion.circle
@@ -97,7 +97,7 @@ export function MiniRadial({ value = 72 }: { value?: number }) {
 export function MiniProgress() {
   const rows = [80, 55, 68];
   return (
-    <div className="flex h-[50px] flex-col justify-center gap-2.5">
+    <div className="flex h-[50px] w-full flex-col justify-center gap-2.5">
       {rows.map((w, i) => (
         <div key={i} className="h-1.5 w-full overflow-hidden rounded-full bg-white/[0.06]">
           <motion.div
@@ -149,7 +149,7 @@ export function MiniStats() {
     { label: "Producción", value: "+18%", bar: 78 },
   ];
   return (
-    <div className="flex h-[64px] flex-col justify-center gap-2">
+    <div className="flex h-[64px] w-full flex-col justify-center gap-2">
       {stats.map((s, i) => (
         <div key={s.label} className="flex items-center gap-2.5">
           <span className="w-16 shrink-0 text-[10px] text-gray-soft">{s.label}</span>
