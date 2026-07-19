@@ -1,4 +1,4 @@
-import { Logo } from "@/components/ui/Logo";
+import { Logo, Isotipo } from "@/components/ui/Logo";
 import { Linkedin, Twitter, Github } from "lucide-react";
 
 const COLUMNS = [
@@ -18,8 +18,12 @@ const COLUMNS = [
 
 export function Footer() {
   return (
-    <footer className="relative border-t border-white/[0.06] py-16">
-      <div className="container">
+    <footer className="relative overflow-hidden border-t border-white/[0.06] py-16">
+      <Isotipo
+        variant="white"
+        className="pointer-events-none absolute -bottom-24 -right-16 h-[380px] w-[380px] opacity-[0.035] sm:-bottom-32 sm:-right-20 sm:h-[520px] sm:w-[520px]"
+      />
+      <div className="container relative">
         <div className="grid grid-cols-1 gap-12 md:grid-cols-[1.4fr_2fr]">
           <div>
             <Logo />
