@@ -1,5 +1,6 @@
 import { Header } from "@/components/sections/Header";
 import { Hero } from "@/components/sections/Hero";
+import { Stats } from "@/components/sections/Stats";
 import { Services } from "@/components/sections/Services";
 import { HowWeWork } from "@/components/sections/HowWeWork";
 import { UseCases } from "@/components/sections/UseCases";
@@ -16,6 +17,7 @@ export default function Home() {
       <Header />
       <main className="relative">
         <Hero />
+        <Stats />
         <Services />
         <HowWeWork />
         <UseCases />
