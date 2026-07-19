@@ -6,7 +6,6 @@ import { HowWeWork } from "@/components/sections/HowWeWork";
 import { UseCases } from "@/components/sections/UseCases";
 import { Differentiator } from "@/components/sections/Differentiator";
 import { ProductShowcase } from "@/components/sections/ProductShowcase";
-import { Testimonials } from "@/components/sections/Testimonials";
 import { FAQ } from "@/components/sections/FAQ";
 import { CTA } from "@/components/sections/CTA";
 import { Footer } from "@/components/sections/Footer";
@@ -23,7 +22,6 @@ export default function Home() {
         <UseCases />
         <Differentiator />
         <ProductShowcase />
-        <Testimonials />
         <FAQ />
         <CTA />
       </main>
