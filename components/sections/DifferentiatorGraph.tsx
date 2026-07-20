@@ -420,18 +420,6 @@ export function DifferentiatorGraph() {
             Reiniciar
           </button>
         )}
-        {/* TEMP DEBUG — forces the fuse sequence without needing to drag all
-            7 nodes, so alignment can be verified headlessly. Remove before
-            considering this component final. */}
-        {!fused && (
-          <button
-            onClick={() => setAbsorbedCount(NODES.length)}
-            data-debug-fuse="true"
-            className="pointer-events-auto rounded-full border border-white/[0.08] bg-black/30 px-3 py-1.5 text-[11px] text-primary-bright backdrop-blur-sm transition-colors hover:border-primary-bright/40"
-          >
-            DEBUG
-          </button>
-        )}
       </div>
     </div>
   );
