@@ -299,13 +299,33 @@ export function DifferentiatorGraph() {
           <AnimatePresence>{exploding && <BigBangBurst />}</AnimatePresence>
         </div>
 
-        {/* center node — outer wrapper is a plain (non-motion) element so its
+        {/* connector — a thin animated bridge between the two circles once
+            fused, with a traveling pulse suggesting a live, two-way link.
+            Outer wrapper is a plain (non-motion) element so its CSS
+            -50%/-50% centering is never overridden by the inner scaleX/opacity
+            animation's own transform tracking. */}
+        <div className="pointer-events-none absolute left-1/2 top-1/2 z-[5] -translate-x-1/2 -translate-y-1/2">
+          <motion.div
+            initial={{ opacity: 0, scaleX: 0 }}
+            animate={{ opacity: fused ? 1 : 0, scaleX: fused ? 1 : 0 }}
+            transition={{ duration: 0.5, delay: 0.15 }}
+            className="relative h-px w-[68px] bg-gradient-to-r from-primary-bright/70 via-white/60 to-primary-bright/70"
+          >
+            <motion.span
+              animate={{ left: fused ? ["0%", "100%"] : "0%" }}
+              transition={{ duration: 1.6, repeat: Infinity, ease: "linear", delay: 0.6 }}
+              className="absolute top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white shadow-glow-sm"
+            />
+          </motion.div>
+        </div>
+
+        {/* FORDEX Core — outer wrapper is a plain (non-motion) element so its
             CSS -50%/-50% centering transform is never overridden by
-            Framer Motion's own transform tracking on the inner scale animation */}
+            Framer Motion's own transform tracking on the inner scale/x animation */}
         <div className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2">
           <motion.div
-            animate={{ scale: magnet && !fused ? 1.12 : 1 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            animate={{ scale: magnet && !fused ? 1.12 : 1, x: fused ? -90 : 0 }}
+            transition={{ type: "spring", stiffness: 220, damping: 22 }}
             className="relative"
           >
             <motion.span
@@ -313,52 +333,54 @@ export function DifferentiatorGraph() {
               className="absolute inset-0 -m-4 animate-pulse-glow rounded-full bg-primary-bright/20 blur-xl"
             />
 
-            <motion.div
-              animate={{
-                width: fused ? 168 : 112,
-                height: fused ? 168 : 112,
-              }}
-              transition={{ type: "spring", stiffness: 200, damping: 22 }}
-              className="glass-strong relative flex flex-col items-center justify-center gap-1.5 rounded-full text-center shadow-glow"
-            >
-              <AnimatePresence mode="wait">
-                {!fused ? (
-                  <motion.div
-                    key="core"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: exploding ? 0 : 1 }}
-                    exit={{ opacity: 0 }}
-                    className="flex flex-col items-center gap-1"
-                  >
-                    <Isotipo variant="gradient" className="h-7 w-7" />
-                    <span className="text-[10px] font-medium leading-tight text-white">
-                      FORDEX
-                      <br />
-                      Core
-                    </span>
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="fused"
-                    initial={{ opacity: 0, scale: 0.6 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ type: "spring", stiffness: 260, damping: 18, delay: 0.1 }}
-                    className="flex flex-col items-center gap-2"
-                  >
-                    <div className="flex items-center gap-2">
-                      <Isotipo variant="gradient" className="h-6 w-6" />
-                      <span className="text-sm text-gray-dim">+</span>
-                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/10 text-white">
-                        <Building2 className="h-3.5 w-3.5" />
-                      </span>
-                    </div>
-                    <span className="text-[9px] font-medium leading-tight text-white">
-                      FORDEX × Tu empresa
-                    </span>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
+            <div className="glass-strong relative flex h-28 w-28 flex-col items-center justify-center gap-1.5 rounded-full text-center shadow-glow">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: exploding ? 0 : 1 }}
+                transition={{ duration: 0.3 }}
+                className="flex flex-col items-center gap-1"
+              >
+                <Isotipo variant="gradient" className="h-7 w-7" />
+                <span className="text-[10px] font-medium leading-tight text-white">
+                  FORDEX
+                  <br />
+                  Core
+                </span>
+              </motion.div>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Tu Empresa — a second, independent world that appears once fused,
+            mirrored on the opposite side of the connector from Core */}
+        <div className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2">
+          <motion.div
+            initial={{ x: 0, scale: 0.5, opacity: 0 }}
+            animate={{
+              x: fused ? 90 : 0,
+              scale: fused ? 1 : 0.5,
+              opacity: fused ? 1 : 0,
+            }}
+            transition={{
+              type: "spring",
+              stiffness: 220,
+              damping: 22,
+              delay: fused ? 0.12 : 0,
+            }}
+            className="relative"
+          >
+            <span className="absolute inset-0 -m-4 rounded-full bg-white/10 blur-xl" />
+
+            <div className="glass-strong relative flex h-28 w-28 flex-col items-center justify-center gap-1.5 rounded-full text-center shadow-glow">
+              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10 text-white">
+                <Building2 className="h-4 w-4" />
+              </span>
+              <span className="text-[10px] font-medium leading-tight text-white">
+                TU
+                <br />
+                EMPRESA
+              </span>
+            </div>
           </motion.div>
         </div>
 
@@ -380,7 +402,7 @@ export function DifferentiatorGraph() {
       <div className="pointer-events-none absolute bottom-5 left-1/2 flex -translate-x-1/2 items-center gap-3">
         <div className="rounded-full border border-white/[0.08] bg-black/30 px-3 py-1.5 text-[11px] text-gray-dim backdrop-blur-sm">
           {fused
-            ? "Nos fusionamos con tu operación."
+            ? "Dos mundos, una misma operación conectada."
             : "Arrastra los nodos hacia el centro para fusionarlos"}
         </div>
         {fused && (
