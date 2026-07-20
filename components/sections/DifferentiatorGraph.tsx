@@ -291,6 +291,14 @@ export function DifferentiatorGraph() {
           })}
         </svg>
 
+        {/* big bang burst — an independent sibling anchored with the exact same
+            left-1/2/top-1/2/-translate-50% pattern as the core node below, so its
+            origin is pixel-identical to the core's center regardless of the core's
+            own scale animation or nested box sizing */}
+        <div className="pointer-events-none absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2">
+          <AnimatePresence>{exploding && <BigBangBurst />}</AnimatePresence>
+        </div>
+
         {/* center node — outer wrapper is a plain (non-motion) element so its
             CSS -50%/-50% centering transform is never overridden by
             Framer Motion's own transform tracking on the inner scale animation */}
@@ -304,8 +312,6 @@ export function DifferentiatorGraph() {
               animate={{ opacity: magnet && !fused ? 0.55 : 0.28 }}
               className="absolute inset-0 -m-4 animate-pulse-glow rounded-full bg-primary-bright/20 blur-xl"
             />
-
-            <AnimatePresence>{exploding && <BigBangBurst />}</AnimatePresence>
 
             <motion.div
               animate={{

@@ -1,17 +1,8 @@
-import { HeartPulse, Boxes, ShoppingBag, Factory, HardHat } from "lucide-react";
 import { GlowButton, GhostButton } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/SectionHeading";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { GridBackground, GlowOrb } from "@/components/ui/Background";
 import { HeroDashboard } from "./HeroDashboard";
-
-const TRUST_INDUSTRIES = [
-  { icon: HeartPulse, label: "Salud" },
-  { icon: Boxes, label: "Logística" },
-  { icon: ShoppingBag, label: "Retail" },
-  { icon: Factory, label: "Manufactura" },
-  { icon: HardHat, label: "Construcción" },
-];
 
 export function Hero() {
   return (
@@ -49,21 +40,6 @@ export function Hero() {
             </div>
           </FadeIn>
 
-          <FadeIn delay={0.4}>
-            <div className="mt-14 border-t border-white/[0.06] pt-8">
-              <div className="flex flex-wrap items-center gap-2.5">
-                {TRUST_INDUSTRIES.map((item) => (
-                  <div
-                    key={item.label}
-                    className="flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-3.5 py-2 text-sm font-medium text-gray-soft/80"
-                  >
-                    <item.icon className="h-3.5 w-3.5 text-primary-bright" />
-                    <span>{item.label}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </FadeIn>
         </div>
 
         <div className="lg:col-span-7">

@@ -19,7 +19,6 @@ const POINTS = [
 export function Differentiator() {
   return (
     <section id="nosotros" className="relative py-20 sm:py-28">
-      <div className="pointer-events-none absolute inset-x-0 top-1/2 -z-10 h-[500px] -translate-y-1/2 bg-radial-glow opacity-60" />
       <div className="container">
         <SectionHeading
           eyebrow="Por qué FORDEX"
