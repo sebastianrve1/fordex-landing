@@ -229,9 +229,9 @@ export function DifferentiatorGraph() {
         className="pointer-events-none absolute inset-0"
         style={{
           maskImage:
-            "radial-gradient(ellipse 62% 62% at 50% 50%, black 40%, transparent 88%)",
+            "radial-gradient(ellipse 50% 50% at 50% 50%, black 25%, transparent 80%)",
           WebkitMaskImage:
-            "radial-gradient(ellipse 62% 62% at 50% 50%, black 40%, transparent 88%)",
+            "radial-gradient(ellipse 50% 50% at 50% 50%, black 25%, transparent 80%)",
         }}
       >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,rgba(15,23,41,0.9),transparent_75%)]" />
@@ -291,66 +291,70 @@ export function DifferentiatorGraph() {
           })}
         </svg>
 
-        {/* center node */}
-        <motion.div
-          animate={{ scale: magnet && !fused ? 1.12 : 1 }}
-          transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          className="relative z-10"
-        >
-          <motion.span
-            animate={{ opacity: magnet && !fused ? 0.55 : 0.28 }}
-            className="absolute inset-0 -m-4 animate-pulse-glow rounded-full bg-primary-bright/20 blur-xl"
-          />
-
-          <AnimatePresence>{exploding && <BigBangBurst />}</AnimatePresence>
-
+        {/* center node — outer wrapper is a plain (non-motion) element so its
+            CSS -50%/-50% centering transform is never overridden by
+            Framer Motion's own transform tracking on the inner scale animation */}
+        <div className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2">
           <motion.div
-            animate={{
-              width: fused ? 168 : 112,
-              height: fused ? 168 : 112,
-            }}
-            transition={{ type: "spring", stiffness: 200, damping: 22 }}
-            className="glass-strong relative flex flex-col items-center justify-center gap-1.5 rounded-full text-center shadow-glow"
+            animate={{ scale: magnet && !fused ? 1.12 : 1 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            className="relative"
           >
-            <AnimatePresence mode="wait">
-              {!fused ? (
-                <motion.div
-                  key="core"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: exploding ? 0 : 1 }}
-                  exit={{ opacity: 0 }}
-                  className="flex flex-col items-center gap-1"
-                >
-                  <Isotipo variant="gradient" className="h-7 w-7" />
-                  <span className="text-[10px] font-medium leading-tight text-white">
-                    FORDEX
-                    <br />
-                    Core
-                  </span>
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="fused"
-                  initial={{ opacity: 0, scale: 0.6 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ type: "spring", stiffness: 260, damping: 18, delay: 0.1 }}
-                  className="flex flex-col items-center gap-2"
-                >
-                  <div className="flex items-center gap-2">
-                    <Isotipo variant="gradient" className="h-6 w-6" />
-                    <span className="text-sm text-gray-dim">+</span>
-                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/10 text-white">
-                      <Building2 className="h-3.5 w-3.5" />
+            <motion.span
+              animate={{ opacity: magnet && !fused ? 0.55 : 0.28 }}
+              className="absolute inset-0 -m-4 animate-pulse-glow rounded-full bg-primary-bright/20 blur-xl"
+            />
+
+            <AnimatePresence>{exploding && <BigBangBurst />}</AnimatePresence>
+
+            <motion.div
+              animate={{
+                width: fused ? 168 : 112,
+                height: fused ? 168 : 112,
+              }}
+              transition={{ type: "spring", stiffness: 200, damping: 22 }}
+              className="glass-strong relative flex flex-col items-center justify-center gap-1.5 rounded-full text-center shadow-glow"
+            >
+              <AnimatePresence mode="wait">
+                {!fused ? (
+                  <motion.div
+                    key="core"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: exploding ? 0 : 1 }}
+                    exit={{ opacity: 0 }}
+                    className="flex flex-col items-center gap-1"
+                  >
+                    <Isotipo variant="gradient" className="h-7 w-7" />
+                    <span className="text-[10px] font-medium leading-tight text-white">
+                      FORDEX
+                      <br />
+                      Core
                     </span>
-                  </div>
-                  <span className="text-[9px] font-medium leading-tight text-white">
-                    FORDEX × Tu empresa
-                  </span>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="fused"
+                    initial={{ opacity: 0, scale: 0.6 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ type: "spring", stiffness: 260, damping: 18, delay: 0.1 }}
+                    className="flex flex-col items-center gap-2"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Isotipo variant="gradient" className="h-6 w-6" />
+                      <span className="text-sm text-gray-dim">+</span>
+                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/10 text-white">
+                        <Building2 className="h-3.5 w-3.5" />
+                      </span>
+                    </div>
+                    <span className="text-[9px] font-medium leading-tight text-white">
+                      FORDEX × Tu empresa
+                    </span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
           </motion.div>
-        </motion.div>
+        </div>
 
         {/* satellite nodes — draggable, absorbed into the core */}
         <div key={resetKey}>

@@ -51,10 +51,7 @@ export function Hero() {
 
           <FadeIn delay={0.4}>
             <div className="mt-14 border-t border-white/[0.06] pt-8">
-              <p className="text-xs uppercase tracking-widest text-gray-dim">
-                Confiado por equipos de operación en
-              </p>
-              <div className="mt-4 flex flex-wrap items-center gap-2.5">
+              <div className="flex flex-wrap items-center gap-2.5">
                 {TRUST_INDUSTRIES.map((item) => (
                   <div
                     key={item.label}

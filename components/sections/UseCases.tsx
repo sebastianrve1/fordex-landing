@@ -76,18 +76,18 @@ export function UseCases() {
               variants={fadeInItem}
               whileHover={{ y: -5 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="group flex flex-col rounded-3xl border border-white/[0.06] bg-white/[0.02] p-7 transition-colors duration-300 hover:border-primary-bright/25 hover:bg-white/[0.035]"
+              className="group flex h-full flex-col rounded-3xl border border-white/[0.06] bg-white/[0.02] p-7 transition-colors duration-300 hover:border-primary-bright/25 hover:bg-white/[0.035]"
             >
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-primary-bright">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-primary-bright">
                   <item.icon className="h-4.5 w-4.5" />
                 </div>
                 <h3 className="text-base font-semibold text-white">{item.title}</h3>
               </div>
-              <p className="mt-4 text-sm leading-relaxed text-gray-soft">
+              <p className="mt-4 min-h-[44px] text-sm leading-relaxed text-gray-soft">
                 {item.description}
               </p>
-              <div className="mt-6 flex items-center rounded-xl border border-white/[0.05] bg-black/20 p-3.5">
+              <div className="mt-6 flex h-[92px] items-center justify-center rounded-xl border border-white/[0.05] bg-black/20 p-3.5">
                 <item.Chart />
               </div>
             </motion.div>
