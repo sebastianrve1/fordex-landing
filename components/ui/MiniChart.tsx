@@ -39,7 +39,7 @@ const EKG_PATH =
 
 export function MiniPulse() {
   return (
-    <div className="relative h-[50px] w-full">
+    <div className="relative h-full w-full">
       <span className="absolute right-0 top-0 flex items-center gap-1 rounded-full border border-white/[0.08] bg-black/30 px-1.5 py-0.5 text-[9px] font-medium text-primary-bright">
         <span className="relative flex h-1 w-1">
           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-bright opacity-75" />
@@ -47,7 +47,11 @@ export function MiniPulse() {
         </span>
         72 BPM
       </span>
-      <svg viewBox="0 0 160 50" className="h-full w-full overflow-visible">
+      <svg
+        viewBox="0 0 160 50"
+        preserveAspectRatio="none"
+        className="h-full w-full overflow-visible"
+      >
         <motion.path
           d={EKG_PATH}
           fill="none"
@@ -78,7 +82,11 @@ const ROUTE_PATH = "M8,38 L45,38 L45,14 L108,14 L108,34 L152,34";
 
 export function MiniRoute() {
   return (
-    <svg viewBox="0 0 160 50" className="w-full overflow-visible">
+    <svg
+      viewBox="0 0 160 50"
+      preserveAspectRatio="none"
+      className="h-full w-full overflow-visible"
+    >
       <path
         d={ROUTE_PATH}
         fill="none"
@@ -117,7 +125,7 @@ export function MiniRoute() {
 
 export function MiniBars() {
   return (
-    <div className="w-full">
+    <div className="flex h-full w-full flex-col justify-center">
       <p className="mb-2 text-[10px] text-gray-soft">Stock por categoría — 1 bodega en alerta</p>
       <div className="flex h-[38px] w-full items-end gap-1.5">
         {barsData.map((h, i) => (
@@ -139,7 +147,7 @@ export function MiniRadial({ value = 72 }: { value?: number }) {
   const circumference = 2 * Math.PI * 22;
   const offset = circumference - (value / 100) * circumference;
   return (
-    <div className="flex h-[64px] w-full items-center gap-4">
+    <div className="flex h-full w-full items-center gap-4">
       <svg width="52" height="52" viewBox="0 0 52 52" className="shrink-0">
         <circle cx="26" cy="26" r="22" fill="none" stroke="#1B2436" strokeWidth="4.5" />
         <motion.circle
@@ -186,7 +194,7 @@ export function MiniProgress() {
     { label: "Acabados", value: 24 },
   ];
   return (
-    <div className="flex h-[50px] w-full flex-col justify-center gap-2">
+    <div className="flex h-full w-full flex-col justify-center gap-2">
       {rows.map((row, i) => (
         <div key={row.label} className="flex items-center gap-2.5">
           <span className="w-20 shrink-0 text-[10px] text-gray-soft">{row.label}</span>
@@ -241,7 +249,7 @@ export function MiniStats() {
     { label: "Producción", value: "+18%", bar: 78 },
   ];
   return (
-    <div className="flex h-[64px] w-full flex-col justify-center gap-2">
+    <div className="flex h-full w-full flex-col justify-center gap-2">
       {stats.map((s, i) => (
         <div key={s.label} className="flex items-center gap-2.5">
           <span className="w-16 shrink-0 text-[10px] text-gray-soft">{s.label}</span>
