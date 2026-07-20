@@ -177,8 +177,6 @@ export function DifferentiatorGraph() {
   const smy = useSpring(my, { stiffness: 60, damping: 20 });
   const starsX = useTransform(smx, (v) => v * -14);
   const starsY = useTransform(smy, (v) => v * -14);
-  const glowX = useTransform(smx, (v) => v * 22);
-  const glowY = useTransform(smy, (v) => v * 22);
 
   const [absorbedCount, setAbsorbedCount] = useState(0);
   const [magnet, setMagnet] = useState(false);
@@ -253,16 +251,9 @@ export function DifferentiatorGraph() {
           ))}
         </motion.div>
 
-        {/* outer wrapper owns the -50%/-50% centering transform via plain CSS
-            classes so it's never overridden by the inner motion.div's own
-            x/y-driven inline transform (the same Framer Motion gotcha fixed
-            elsewhere in this component) */}
-        <div className="absolute left-1/2 top-1/2 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2">
-          <motion.div
-            style={{ x: glowX, y: glowY }}
-            className="h-full w-full rounded-full bg-primary/15 blur-[100px]"
-          />
-        </div>
+        {/* static, always centered on the core — no mouse-parallax offset,
+            so it can never visually drift away from "FORDEX Core" */}
+        <div className="absolute left-1/2 top-1/2 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/15 blur-[100px]" />
       </div>
 
       {/* orbit rings + graph, centered */}
