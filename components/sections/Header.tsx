@@ -9,10 +9,10 @@ import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
   { label: "Servicios", href: "#servicios" },
-  { label: "Soluciones", href: "#como-trabajamos" },
+  { label: "Cómo trabajamos", href: "#como-trabajamos" },
   { label: "Casos de uso", href: "#casos-de-uso" },
+  { label: "El producto", href: "#producto" },
   { label: "Nosotros", href: "#nosotros" },
-  { label: "Blog", href: "#blog" },
   { label: "Contacto", href: "#contacto" },
 ];
 

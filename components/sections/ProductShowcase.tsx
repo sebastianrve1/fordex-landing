@@ -117,7 +117,7 @@ export function ProductShowcase() {
   const header = HEADERS[nav];
 
   return (
-    <section className="relative py-28 sm:py-36">
+    <section id="producto" className="relative py-28 sm:py-36">
       <div className="container">
         <SectionHeading
           eyebrow="El producto"
