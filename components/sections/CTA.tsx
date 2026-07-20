@@ -4,8 +4,101 @@ import { motion } from "framer-motion";
 import { Mail, MessageCircle, ArrowUpRight } from "lucide-react";
 import { FadeIn, FadeInStagger, fadeInItem } from "@/components/ui/FadeIn";
 import { Eyebrow } from "@/components/ui/SectionHeading";
-import { GlowOrb } from "@/components/ui/Background";
 import { Isotipo } from "@/components/ui/Logo";
+
+// deterministic pseudo-random field so the layout is stable across renders
+function makeStars(count: number, seedStart: number) {
+  let seed = seedStart;
+  const rand = () => {
+    seed = (seed * 9301 + 49297) % 233280;
+    return seed / 233280;
+  };
+  return Array.from({ length: count }, (_, i) => ({
+    id: i,
+    top: rand() * 100,
+    left: rand() * 100,
+    size: rand() * 1.6 + 0.6,
+    delay: rand() * 5,
+    duration: rand() * 3 + 3,
+  }));
+}
+
+const FIELD_STARS = makeStars(60, 17);
+
+// three stars in a shallow diagonal, echoing Orion's belt — a quiet focal
+// point in the field rather than a literal constellation map
+const BELT_STARS = [
+  { top: 22, left: 62 },
+  { top: 30, left: 68 },
+  { top: 38, left: 74 },
+];
+
+function OrionField() {
+  return (
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
+      style={{
+        maskImage:
+          "radial-gradient(ellipse 65% 70% at 50% 45%, black 25%, transparent 80%)",
+        WebkitMaskImage:
+          "radial-gradient(ellipse 65% 70% at 50% 45%, black 25%, transparent 80%)",
+      }}
+    >
+      {FIELD_STARS.map((s) => (
+        <motion.span
+          key={s.id}
+          className="absolute rounded-full bg-white"
+          style={{ top: `${s.top}%`, left: `${s.left}%`, width: s.size, height: s.size }}
+          animate={{ opacity: [0.1, 0.75, 0.1] }}
+          transition={{
+            duration: s.duration,
+            repeat: Infinity,
+            delay: s.delay,
+            ease: "easeInOut",
+          }}
+        />
+      ))}
+
+      <svg className="absolute inset-0 h-full w-full overflow-visible">
+        <defs>
+          <linearGradient id="beltLine" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#3B82F6" stopOpacity="0" />
+            <stop offset="50%" stopColor="#93C5FD" stopOpacity="0.4" />
+            <stop offset="100%" stopColor="#3B82F6" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <motion.line
+          x1={`${BELT_STARS[0].left}%`}
+          y1={`${BELT_STARS[0].top}%`}
+          x2={`${BELT_STARS[2].left}%`}
+          y2={`${BELT_STARS[2].top}%`}
+          stroke="url(#beltLine)"
+          strokeWidth="1"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.2 }}
+        />
+      </svg>
+
+      {BELT_STARS.map((s, i) => (
+        <div
+          key={i}
+          className="absolute -translate-x-1/2 -translate-y-1/2"
+          style={{ top: `${s.top}%`, left: `${s.left}%` }}
+        >
+          <motion.span
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 3.5, repeat: Infinity, delay: i * 0.4, ease: "easeInOut" }}
+            className="absolute inset-0 -m-2.5 rounded-full bg-primary-bright/30 blur-md"
+          />
+          <span className="relative block h-1.5 w-1.5 rounded-full bg-white shadow-[0_0_6px_1px_rgba(255,255,255,0.8)]" />
+        </div>
+      ))}
+    </div>
+  );
+}
 
 const INDUSTRIES = [
   "Salud",
@@ -40,14 +133,14 @@ const CONTACT_OPTIONS = [
 export function CTA() {
   return (
     <section id="contacto" className="relative py-28 sm:py-36">
-      <div className="container">
-        <div className="relative overflow-hidden rounded-5xl border border-white/[0.07] bg-gradient-to-b from-white/[0.04] to-transparent px-6 py-20 text-center sm:px-14 sm:py-28">
-          <GlowOrb color="primary" className="left-1/2 top-1/2 h-[560px] w-[560px] -translate-x-1/2 -translate-y-1/2" />
-          <Isotipo
-            variant="mono"
-            className="pointer-events-none absolute -right-10 -top-10 h-56 w-44 rotate-12 opacity-[0.06] sm:h-72 sm:w-56"
-          />
+      <OrionField />
+      <Isotipo
+        variant="mono"
+        className="pointer-events-none absolute -right-6 -top-6 h-56 w-44 rotate-12 opacity-[0.06] sm:h-72 sm:w-56"
+      />
 
+      <div className="container">
+        <div className="relative text-center">
           <div className="relative">
             <FadeIn>
               <div className="flex justify-center">
@@ -149,3 +242,4 @@ export function CTA() {
     </section>
   );
 }
+
