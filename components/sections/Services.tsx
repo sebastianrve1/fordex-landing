@@ -47,7 +47,7 @@ export function Services() {
         />
 
         <FadeInStagger className="mt-16 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {SERVICES.map((service) => (
+          {SERVICES.map((service, i) => (
             <motion.div
               key={service.title}
               variants={fadeInItem}
@@ -57,10 +57,24 @@ export function Services() {
             >
               <div className="absolute -right-12 -top-12 h-40 w-40 rounded-full bg-primary/0 blur-3xl transition-colors duration-500 group-hover:bg-primary/25" />
 
+              {/* diagonal sheen that sweeps across on hover — reads as the
+                  card "activating" rather than just lighting up statically */}
+              <div className="pointer-events-none absolute inset-0 -translate-x-full -skew-x-12 bg-gradient-to-r from-transparent via-white/[0.06] to-transparent transition-transform duration-[1100ms] ease-out group-hover:translate-x-full" />
+
               <div className="relative flex items-start justify-between">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04] text-primary-bright transition-all duration-500 group-hover:border-primary-bright/40 group-hover:shadow-[0_0_30px_-8px_rgba(59,130,246,0.7)]">
+                <motion.div
+                  animate={{ y: [0, -3, 0] }}
+                  transition={{
+                    duration: 3.2 + i * 0.3,
+                    repeat: Infinity,
+                    repeatDelay: 1,
+                    ease: "easeInOut",
+                    delay: i * 0.25,
+                  }}
+                  className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04] text-primary-bright transition-all duration-500 group-hover:border-primary-bright/40 group-hover:shadow-[0_0_30px_-8px_rgba(59,130,246,0.7)]"
+                >
                   <service.icon className="h-5 w-5" />
-                </div>
+                </motion.div>
                 <ArrowUpRight className="h-4 w-4 text-gray-dim opacity-0 transition-all duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-primary-bright group-hover:opacity-100" />
               </div>
 
