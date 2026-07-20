@@ -253,10 +253,16 @@ export function DifferentiatorGraph() {
           ))}
         </motion.div>
 
-        <motion.div
-          style={{ x: glowX, y: glowY }}
-          className="absolute left-1/2 top-1/2 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/15 blur-[100px]"
-        />
+        {/* outer wrapper owns the -50%/-50% centering transform via plain CSS
+            classes so it's never overridden by the inner motion.div's own
+            x/y-driven inline transform (the same Framer Motion gotcha fixed
+            elsewhere in this component) */}
+        <div className="absolute left-1/2 top-1/2 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2">
+          <motion.div
+            style={{ x: glowX, y: glowY }}
+            className="h-full w-full rounded-full bg-primary/15 blur-[100px]"
+          />
+        </div>
       </div>
 
       {/* orbit rings + graph, centered */}
