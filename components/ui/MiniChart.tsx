@@ -33,19 +33,104 @@ export function MiniLineChart() {
   );
 }
 
+// Salud — monitor de signos vitales (pulso/EKG)
+const EKG_PATH =
+  "M0,25 L18,25 L23,18 L27,25 L31,25 L34,42 L37,5 L40,32 L44,20 L49,25 L70,25 L88,25 L93,18 L97,25 L101,25 L104,42 L107,5 L110,32 L114,20 L119,25 L160,25";
+
+export function MiniPulse() {
+  return (
+    <div className="relative h-[50px] w-full">
+      <span className="absolute right-0 top-0 flex items-center gap-1 rounded-full border border-white/[0.08] bg-black/30 px-1.5 py-0.5 text-[9px] font-medium text-primary-bright">
+        <span className="relative flex h-1 w-1">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-bright opacity-75" />
+          <span className="relative inline-flex h-1 w-1 rounded-full bg-primary-bright" />
+        </span>
+        72 BPM
+      </span>
+      <svg viewBox="0 0 160 50" className="h-full w-full overflow-visible">
+        <motion.path
+          d={EKG_PATH}
+          fill="none"
+          stroke="#3B82F6"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          initial={{ pathLength: 0 }}
+          whileInView={{ pathLength: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.8, ease: "easeInOut" }}
+        />
+        <motion.circle
+          r="3"
+          fill="#60A5FA"
+          initial={{ offsetDistance: "0%", opacity: 0 }}
+          animate={{ offsetDistance: "100%", opacity: [0, 1, 1, 0] }}
+          transition={{ duration: 2.4, repeat: Infinity, ease: "linear", delay: 1.8 }}
+          style={{ offsetPath: `path('${EKG_PATH}')` } as React.CSSProperties}
+        />
+      </svg>
+    </div>
+  );
+}
+
+// Transporte — ruta con paradas y unidad en movimiento
+const ROUTE_PATH = "M8,38 L45,38 L45,14 L108,14 L108,34 L152,34";
+
+export function MiniRoute() {
+  return (
+    <svg viewBox="0 0 160 50" className="w-full overflow-visible">
+      <path
+        d={ROUTE_PATH}
+        fill="none"
+        stroke="#1B2436"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <motion.path
+        d={ROUTE_PATH}
+        fill="none"
+        stroke="#3B82F6"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeDasharray="1 7"
+        initial={{ pathLength: 0 }}
+        whileInView={{ pathLength: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1.4, ease: "easeInOut" }}
+      />
+      <circle cx="8" cy="38" r="4" fill="#3B82F6" />
+      <circle cx="108" cy="14" r="3" fill="none" stroke="#3B82F6" strokeWidth="1.5" />
+      <circle cx="152" cy="34" r="4" fill="none" stroke="#60A5FA" strokeWidth="2" />
+      <motion.circle
+        r="3.5"
+        fill="#ffffff"
+        initial={{ offsetDistance: "0%" }}
+        animate={{ offsetDistance: "100%" }}
+        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+        style={{ offsetPath: `path('${ROUTE_PATH}')` } as React.CSSProperties}
+      />
+    </svg>
+  );
+}
+
 export function MiniBars() {
   return (
-    <div className="flex h-[50px] w-full items-end gap-1.5">
-      {barsData.map((h, i) => (
-        <motion.div
-          key={i}
-          initial={{ height: 0 }}
-          whileInView={{ height: `${h}%` }}
-          viewport={{ once: true }}
-          transition={{ delay: i * 0.06, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className={`w-full rounded-sm ${i === 5 ? "bg-primary-bright" : "bg-primary/35"}`}
-        />
-      ))}
+    <div className="w-full">
+      <p className="mb-2 text-[10px] text-gray-soft">Stock por categoría — 1 bodega en alerta</p>
+      <div className="flex h-[38px] w-full items-end gap-1.5">
+        {barsData.map((h, i) => (
+          <motion.div
+            key={i}
+            initial={{ height: 0 }}
+            whileInView={{ height: `${h}%` }}
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.06, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className={`w-full rounded-sm ${i === 5 ? "bg-primary-bright" : "bg-primary/35"}`}
+          />
+        ))}
+      </div>
     </div>
   );
 }
@@ -95,18 +180,25 @@ export function MiniRadial({ value = 72 }: { value?: number }) {
 }
 
 export function MiniProgress() {
-  const rows = [80, 55, 68];
+  const rows = [
+    { label: "Cimentación", value: 100 },
+    { label: "Estructura", value: 68 },
+    { label: "Acabados", value: 24 },
+  ];
   return (
-    <div className="flex h-[50px] w-full flex-col justify-center gap-2.5">
-      {rows.map((w, i) => (
-        <div key={i} className="h-1.5 w-full overflow-hidden rounded-full bg-white/[0.06]">
-          <motion.div
-            initial={{ width: 0 }}
-            whileInView={{ width: `${w}%` }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="h-full rounded-full bg-gradient-to-r from-primary to-primary-bright"
-          />
+    <div className="flex h-[50px] w-full flex-col justify-center gap-2">
+      {rows.map((row, i) => (
+        <div key={row.label} className="flex items-center gap-2.5">
+          <span className="w-20 shrink-0 text-[10px] text-gray-soft">{row.label}</span>
+          <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/[0.06]">
+            <motion.div
+              initial={{ width: 0 }}
+              whileInView={{ width: `${row.value}%` }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="h-full rounded-full bg-gradient-to-r from-primary to-primary-bright"
+            />
+          </div>
         </div>
       ))}
     </div>
