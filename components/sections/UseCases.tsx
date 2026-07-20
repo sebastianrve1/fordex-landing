@@ -12,11 +12,11 @@ import {
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { FadeInStagger, fadeInItem } from "@/components/ui/FadeIn";
 import {
-  MiniLineChart,
+  MiniPulse,
   MiniBars,
   MiniRadial,
   MiniProgress,
-  MiniDots,
+  MiniRoute,
   MiniStats,
 } from "@/components/ui/MiniChart";
 
@@ -25,13 +25,13 @@ const USE_CASES = [
     icon: HeartPulse,
     title: "Salud",
     description: "Gestión de pacientes, historiales clínicos y flujos de atención automatizados.",
-    Chart: MiniLineChart,
+    Chart: MiniPulse,
   },
   {
     icon: Truck,
     title: "Transporte",
     description: "Monitoreo de flotas y rutas en tiempo real con alertas inteligentes.",
-    Chart: MiniDots,
+    Chart: MiniRoute,
   },
   {
     icon: Boxes,

@@ -1,8 +1,15 @@
 "use client";
 
-import { useMemo, useRef } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { Cloud, Brain, ShieldCheck, Database, Code2, Workflow, Cable } from "lucide-react";
+import { useRef, useState, useEffect, useCallback } from "react";
+import {
+  motion,
+  AnimatePresence,
+  useMotionValue,
+  useSpring,
+  useTransform,
+  animate,
+} from "framer-motion";
+import { Cloud, Brain, ShieldCheck, Database, Code2, Workflow, Cable, Building2 } from "lucide-react";
 import { Isotipo } from "@/components/ui/Logo";
 
 const NODES = [
@@ -16,6 +23,8 @@ const NODES = [
 ];
 
 const RADIUS = 190;
+const ABSORB_RADIUS = 72;
+const MAGNET_RADIUS = 150;
 
 function polar(angleDeg: number, radius: number) {
   const rad = (angleDeg * Math.PI) / 180;
@@ -47,31 +56,61 @@ const STARS = makeStars(70);
 function SatelliteNode({
   node,
   index,
+  onAbsorbed,
+  onMagnet,
 }: {
   node: (typeof NODES)[number];
   index: number;
+  onAbsorbed: () => void;
+  onMagnet: (near: boolean) => void;
 }) {
   const p = polar(node.angle, RADIUS);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const scale = useMotionValue(1);
+  const [absorbed, setAbsorbed] = useState(false);
+
+  const handleDrag = useCallback(() => {
+    const dist = Math.hypot(p.x + x.get(), p.y + y.get());
+    onMagnet(dist < MAGNET_RADIUS);
+  }, [p.x, p.y, x, y, onMagnet]);
+
+  const handleDragEnd = useCallback(() => {
+    const dist = Math.hypot(p.x + x.get(), p.y + y.get());
+    onMagnet(false);
+    if (dist < ABSORB_RADIUS) {
+      animate(x, -p.x, { type: "spring", stiffness: 320, damping: 24 });
+      animate(y, -p.y, { type: "spring", stiffness: 320, damping: 24 });
+      animate(scale, 0, { delay: 0.18, duration: 0.25, ease: "easeIn" });
+      setAbsorbed(true);
+      setTimeout(onAbsorbed, 260);
+    } else {
+      animate(x, 0, { type: "spring", stiffness: 380, damping: 22 });
+      animate(y, 0, { type: "spring", stiffness: 380, damping: 22 });
+    }
+  }, [p.x, p.y, x, y, scale, onAbsorbed, onMagnet]);
+
   return (
     <div
       className="absolute left-1/2 top-1/2 z-10"
       style={{ transform: `translate(calc(-50% + ${p.x}px), calc(-50% + ${p.y}px))` }}
     >
       <motion.div
-        drag
-        dragElastic={0.55}
-        dragSnapToOrigin
-        dragTransition={{ bounceStiffness: 420, bounceDamping: 16 }}
+        drag={!absorbed}
+        dragElastic={0.4}
+        dragMomentum={false}
+        style={{ x, y, scale }}
+        onDrag={handleDrag}
+        onDragEnd={handleDragEnd}
         whileDrag={{ scale: 1.18, zIndex: 30 }}
-        whileHover={{ scale: 1.08 }}
+        whileHover={absorbed ? undefined : { scale: 1.08 }}
         initial={{ scale: 0, opacity: 0 }}
-        whileInView={{ scale: 1, opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ delay: node.delay + 0.2, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="cursor-grab active:cursor-grabbing"
+        animate={{ opacity: absorbed ? 0 : 1 }}
+        transition={{ duration: 0.25 }}
+        className={absorbed ? "pointer-events-none" : "cursor-grab active:cursor-grabbing"}
       >
         <motion.div
-          animate={{ y: [0, -8, 0] }}
+          animate={absorbed ? {} : { y: [0, -8, 0] }}
           transition={{ duration: 5 + index, repeat: Infinity, ease: "easeInOut" }}
           className="glass flex flex-col items-center gap-1.5 rounded-2xl px-3.5 py-3 shadow-card"
         >
@@ -80,6 +119,42 @@ function SatelliteNode({
         </motion.div>
       </motion.div>
     </div>
+  );
+}
+
+function BigBangBurst() {
+  const particles = useRef(
+    Array.from({ length: 22 }, (_, i) => {
+      const angle = (i / 22) * Math.PI * 2 + Math.random() * 0.3;
+      const dist = 140 + Math.random() * 140;
+      return { id: i, x: Math.cos(angle) * dist, y: Math.sin(angle) * dist };
+    })
+  ).current;
+
+  return (
+    <>
+      <motion.div
+        initial={{ scale: 0, opacity: 1 }}
+        animate={{ scale: 5, opacity: 0 }}
+        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        className="absolute left-1/2 top-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-bright"
+      />
+      <motion.div
+        initial={{ scale: 0, opacity: 0.9 }}
+        animate={{ scale: 3.2, opacity: 0 }}
+        transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+        className="absolute left-1/2 top-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white blur-md"
+      />
+      {particles.map((pt) => (
+        <motion.span
+          key={pt.id}
+          initial={{ x: 0, y: 0, opacity: 1, scale: 1 }}
+          animate={{ x: pt.x, y: pt.y, opacity: 0, scale: 0 }}
+          transition={{ duration: 0.9, ease: "easeOut" }}
+          className="absolute left-1/2 top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-bright"
+        />
+      ))}
+    </>
   );
 }
 
@@ -94,6 +169,31 @@ export function DifferentiatorGraph() {
   const starsY = useTransform(smy, (v) => v * -14);
   const glowX = useTransform(smx, (v) => v * 22);
   const glowY = useTransform(smy, (v) => v * 22);
+
+  const [absorbedCount, setAbsorbedCount] = useState(0);
+  const [magnet, setMagnet] = useState(false);
+  const [exploding, setExploding] = useState(false);
+  const [fused, setFused] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
+
+  useEffect(() => {
+    if (absorbedCount === NODES.length) {
+      setExploding(true);
+      const t = setTimeout(() => {
+        setExploding(false);
+        setFused(true);
+      }, 900);
+      return () => clearTimeout(t);
+    }
+  }, [absorbedCount]);
+
+  function handleReset() {
+    setAbsorbedCount(0);
+    setExploding(false);
+    setFused(false);
+    setMagnet(false);
+    setResetKey((k) => k + 1);
+  }
 
   function handlePointerMove(e: React.PointerEvent<HTMLDivElement>) {
     const rect = containerRef.current?.getBoundingClientRect();
@@ -112,50 +212,55 @@ export function DifferentiatorGraph() {
       ref={containerRef}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
-      className="relative h-[480px] w-full overflow-hidden rounded-[2.5rem] border border-white/[0.06] bg-[radial-gradient(circle_at_50%_45%,rgba(15,23,41,0.9),#05070d_75%)] sm:h-[560px] lg:h-[620px]"
+      className="relative h-[480px] w-full sm:h-[560px] lg:h-[620px]"
     >
-      {/* deep space vignette */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,transparent_35%,#05070d_92%)]" />
-
-      {/* starfield with subtle parallax */}
-      <motion.div
-        style={{ x: starsX, y: starsY }}
-        className="pointer-events-none absolute -inset-6"
+      {/* atmosphere: starfield + glow, feathered so it dissolves into the page background */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          maskImage:
+            "radial-gradient(ellipse 62% 62% at 50% 50%, black 40%, transparent 88%)",
+          WebkitMaskImage:
+            "radial-gradient(ellipse 62% 62% at 50% 50%, black 40%, transparent 88%)",
+        }}
       >
-        {STARS.map((s) => (
-          <motion.span
-            key={s.id}
-            className="absolute rounded-full bg-white"
-            style={{
-              top: `${s.top}%`,
-              left: `${s.left}%`,
-              width: s.size,
-              height: s.size,
-            }}
-            animate={{ opacity: [0.15, 0.9, 0.15] }}
-            transition={{
-              duration: s.duration,
-              repeat: Infinity,
-              delay: s.delay,
-              ease: "easeInOut",
-            }}
-          />
-        ))}
-      </motion.div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,rgba(15,23,41,0.9),transparent_75%)]" />
 
-      {/* ambient glow that drifts with pointer */}
-      <motion.div
-        style={{ x: glowX, y: glowY }}
-        className="pointer-events-none absolute left-1/2 top-1/2 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/15 blur-[100px]"
-      />
+        <motion.div style={{ x: starsX, y: starsY }} className="absolute -inset-6">
+          {STARS.map((s) => (
+            <motion.span
+              key={s.id}
+              className="absolute rounded-full bg-white"
+              style={{ top: `${s.top}%`, left: `${s.left}%`, width: s.size, height: s.size }}
+              animate={{ opacity: [0.15, 0.9, 0.15] }}
+              transition={{
+                duration: s.duration,
+                repeat: Infinity,
+                delay: s.delay,
+                ease: "easeInOut",
+              }}
+            />
+          ))}
+        </motion.div>
+
+        <motion.div
+          style={{ x: glowX, y: glowY }}
+          className="absolute left-1/2 top-1/2 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/15 blur-[100px]"
+        />
+      </div>
 
       {/* orbit rings + graph, centered */}
       <div className="absolute left-1/2 top-1/2 flex h-0 w-0 items-center justify-center">
         <div className="absolute h-[440px] w-[440px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[0.05]" />
         <div className="absolute h-[320px] w-[320px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[0.06]" />
-        <div className="absolute h-[440px] w-[440px] -translate-x-1/2 -translate-y-1/2 animate-spin-slow rounded-full border border-dashed border-white/[0.04]" />
 
         <svg className="absolute h-[440px] w-[440px] -translate-x-1/2 -translate-y-1/2 overflow-visible">
+          <defs>
+            <radialGradient id="tetherFade" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.55" />
+              <stop offset="100%" stopColor="#3B82F6" stopOpacity="0.05" />
+            </radialGradient>
+          </defs>
           {NODES.map((node, i) => {
             const p = polar(node.angle, RADIUS);
             return (
@@ -165,11 +270,10 @@ export function DifferentiatorGraph() {
                 y1="220"
                 x2={220 + p.x}
                 y2={220 + p.y}
-                stroke="#3B82F6"
+                stroke="url(#tetherFade)"
                 strokeWidth="1"
-                strokeDasharray="3 5"
                 initial={{ opacity: 0 }}
-                whileInView={{ opacity: 0.45 }}
+                whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: node.delay, duration: 0.6 }}
               />
@@ -179,32 +283,94 @@ export function DifferentiatorGraph() {
 
         {/* center node */}
         <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          whileInView={{ scale: 1, opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          animate={{ scale: magnet && !fused ? 1.12 : 1 }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
           className="relative z-10"
         >
-          <span className="absolute inset-0 -m-4 animate-pulse-glow rounded-full bg-primary-bright/20 blur-xl" />
-          <div className="glass-strong relative flex h-28 w-28 flex-col items-center justify-center gap-1 rounded-full text-center shadow-glow">
-            <Isotipo variant="gradient" className="h-7 w-7" />
-            <span className="text-[10px] font-medium leading-tight text-white">
-              FORDEX
-              <br />
-              Core
-            </span>
-          </div>
+          <motion.span
+            animate={{ opacity: magnet && !fused ? 0.55 : 0.28 }}
+            className="absolute inset-0 -m-4 animate-pulse-glow rounded-full bg-primary-bright/20 blur-xl"
+          />
+
+          <AnimatePresence>{exploding && <BigBangBurst />}</AnimatePresence>
+
+          <motion.div
+            animate={{
+              width: fused ? 168 : 112,
+              height: fused ? 168 : 112,
+            }}
+            transition={{ type: "spring", stiffness: 200, damping: 22 }}
+            className="glass-strong relative flex flex-col items-center justify-center gap-1.5 rounded-full text-center shadow-glow"
+          >
+            <AnimatePresence mode="wait">
+              {!fused ? (
+                <motion.div
+                  key="core"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: exploding ? 0 : 1 }}
+                  exit={{ opacity: 0 }}
+                  className="flex flex-col items-center gap-1"
+                >
+                  <Isotipo variant="gradient" className="h-7 w-7" />
+                  <span className="text-[10px] font-medium leading-tight text-white">
+                    FORDEX
+                    <br />
+                    Core
+                  </span>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="fused"
+                  initial={{ opacity: 0, scale: 0.6 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ type: "spring", stiffness: 260, damping: 18, delay: 0.1 }}
+                  className="flex flex-col items-center gap-2"
+                >
+                  <div className="flex items-center gap-2">
+                    <Isotipo variant="gradient" className="h-6 w-6" />
+                    <span className="text-sm text-gray-dim">+</span>
+                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/10 text-white">
+                      <Building2 className="h-3.5 w-3.5" />
+                    </span>
+                  </div>
+                  <span className="text-[9px] font-medium leading-tight text-white">
+                    FORDEX × Tu empresa
+                  </span>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
         </motion.div>
 
-        {/* satellite nodes — draggable */}
-        {NODES.map((node, i) => (
-          <SatelliteNode key={node.label} node={node} index={i} />
-        ))}
+        {/* satellite nodes — draggable, absorbed into the core */}
+        <div key={resetKey}>
+          {NODES.map((node, i) => (
+            <SatelliteNode
+              key={node.label}
+              node={node}
+              index={i}
+              onAbsorbed={() => setAbsorbedCount((c) => c + 1)}
+              onMagnet={setMagnet}
+            />
+          ))}
+        </div>
       </div>
 
-      {/* hint */}
-      <div className="pointer-events-none absolute bottom-5 left-1/2 -translate-x-1/2 rounded-full border border-white/[0.08] bg-black/30 px-3 py-1.5 text-[11px] text-gray-dim backdrop-blur-sm">
-        Arrastra los nodos — mueve el cursor para explorar
+      {/* hint / status */}
+      <div className="pointer-events-none absolute bottom-5 left-1/2 flex -translate-x-1/2 items-center gap-3">
+        <div className="rounded-full border border-white/[0.08] bg-black/30 px-3 py-1.5 text-[11px] text-gray-dim backdrop-blur-sm">
+          {fused
+            ? "Nos fusionamos con tu operación."
+            : "Arrastra los nodos hacia el centro para fusionarlos"}
+        </div>
+        {fused && (
+          <button
+            onClick={handleReset}
+            className="pointer-events-auto rounded-full border border-white/[0.08] bg-black/30 px-3 py-1.5 text-[11px] text-primary-bright backdrop-blur-sm transition-colors hover:border-primary-bright/40"
+          >
+            Reiniciar
+          </button>
+        )}
       </div>
     </div>
   );
