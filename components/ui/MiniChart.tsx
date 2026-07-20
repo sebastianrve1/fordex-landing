@@ -47,11 +47,7 @@ export function MiniPulse() {
         </span>
         72 BPM
       </span>
-      <svg
-        viewBox="0 0 160 50"
-        preserveAspectRatio="none"
-        className="h-full w-full overflow-visible"
-      >
+      <svg viewBox="0 0 160 50" className="h-full w-full overflow-visible">
         <motion.path
           d={EKG_PATH}
           fill="none"
@@ -82,11 +78,7 @@ const ROUTE_PATH = "M8,38 L45,38 L45,14 L108,14 L108,34 L152,34";
 
 export function MiniRoute() {
   return (
-    <svg
-      viewBox="0 0 160 50"
-      preserveAspectRatio="none"
-      className="h-full w-full overflow-visible"
-    >
+    <svg viewBox="0 0 160 50" className="h-full w-full overflow-visible">
       <path
         d={ROUTE_PATH}
         fill="none"
