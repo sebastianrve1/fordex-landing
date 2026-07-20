@@ -20,8 +20,8 @@ export default function Home() {
         <Services />
         <HowWeWork />
         <UseCases />
-        <Differentiator />
         <ProductShowcase />
+        <Differentiator />
         <FAQ />
         <CTA />
       </main>
