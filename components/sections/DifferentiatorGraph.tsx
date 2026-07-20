@@ -70,6 +70,14 @@ function SatelliteNode({
   const scale = useMotionValue(0);
   const [absorbed, setAbsorbed] = useState(false);
 
+  // gentle, wordless "come here" cue: nudge toward the core and settle back,
+  // so the whole cluster reads as alive and pullable rather than a static
+  // decoration — direction is simply the unit vector from this node toward
+  // the center (the reverse of its own outward offset)
+  const dist = Math.hypot(p.x, p.y) || 1;
+  const pullX = -(p.x / dist) * 9;
+  const pullY = -(p.y / dist) * 9;
+
   useEffect(() => {
     const controls = animate(scale, 1, {
       duration: 0.5,
@@ -120,8 +128,18 @@ function SatelliteNode({
         className={absorbed ? "pointer-events-none" : "cursor-grab active:cursor-grabbing"}
       >
         <motion.div
-          animate={absorbed ? {} : { y: [0, -8, 0] }}
-          transition={{ duration: 5 + index, repeat: Infinity, ease: "easeInOut" }}
+          animate={
+            absorbed
+              ? {}
+              : { x: [0, pullX, 0], y: [0, pullY, 0], scale: [1, 1.035, 1] }
+          }
+          transition={{
+            duration: 2.6 + index * 0.3,
+            repeat: Infinity,
+            repeatDelay: 0.6,
+            ease: "easeInOut",
+            delay: index * 0.25,
+          }}
           className="glass flex flex-col items-center gap-1.5 rounded-2xl px-3.5 py-3 shadow-card"
         >
           <node.icon className="h-4 w-4 text-primary-bright" />
@@ -237,9 +255,9 @@ export function DifferentiatorGraph() {
         className="pointer-events-none absolute inset-0"
         style={{
           maskImage:
-            "radial-gradient(ellipse 50% 50% at 50% 50%, black 25%, transparent 80%)",
+            "radial-gradient(ellipse 55% 55% at 50% 50%, black 30%, transparent 85%)",
           WebkitMaskImage:
-            "radial-gradient(ellipse 50% 50% at 50% 50%, black 25%, transparent 80%)",
+            "radial-gradient(ellipse 55% 55% at 50% 50%, black 30%, transparent 85%)",
         }}
       >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,rgba(15,23,41,0.9),transparent_75%)]" />
@@ -263,14 +281,11 @@ export function DifferentiatorGraph() {
 
         {/* static, always centered on the core — no mouse-parallax offset,
             so it can never visually drift away from "FORDEX Core" */}
-        <div className="absolute left-1/2 top-1/2 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/15 blur-[100px]" />
+        <div className="absolute left-1/2 top-1/2 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/25 blur-[95px]" />
       </div>
 
-      {/* orbit rings + graph, centered */}
+      {/* orbit + graph, centered */}
       <div className="absolute left-1/2 top-1/2 flex h-0 w-0 items-center justify-center">
-        <div className="absolute h-[440px] w-[440px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[0.05]" />
-        <div className="absolute h-[320px] w-[320px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[0.06]" />
-
         <svg className="absolute h-[440px] w-[440px] -translate-x-1/2 -translate-y-1/2 overflow-visible">
           <defs>
             <radialGradient id="tetherFade" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse">
