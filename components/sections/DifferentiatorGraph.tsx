@@ -67,8 +67,18 @@ function SatelliteNode({
   const p = polar(node.angle, RADIUS);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const scale = useMotionValue(1);
+  const scale = useMotionValue(0);
   const [absorbed, setAbsorbed] = useState(false);
+
+  useEffect(() => {
+    const controls = animate(scale, 1, {
+      duration: 0.5,
+      delay: node.delay,
+      ease: [0.16, 1, 0.3, 1],
+    });
+    return () => controls.stop();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleDrag = useCallback(() => {
     const dist = Math.hypot(p.x + x.get(), p.y + y.get());
@@ -104,7 +114,7 @@ function SatelliteNode({
         onDragEnd={handleDragEnd}
         whileDrag={{ scale: 1.18, zIndex: 30 }}
         whileHover={absorbed ? undefined : { scale: 1.08 }}
-        initial={{ scale: 0, opacity: 0 }}
+        initial={{ opacity: 0 }}
         animate={{ opacity: absorbed ? 0 : 1 }}
         transition={{ duration: 0.25 }}
         className={absorbed ? "pointer-events-none" : "cursor-grab active:cursor-grabbing"}
