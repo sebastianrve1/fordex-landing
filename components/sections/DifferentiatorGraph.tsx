@@ -143,26 +143,36 @@ function BigBangBurst() {
 
   return (
     <>
-      <motion.div
-        initial={{ scale: 0, opacity: 1 }}
-        animate={{ scale: 5, opacity: 0 }}
-        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-        className="absolute left-1/2 top-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-bright"
-      />
-      <motion.div
-        initial={{ scale: 0, opacity: 0.9 }}
-        animate={{ scale: 3.2, opacity: 0 }}
-        transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-        className="absolute left-1/2 top-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white blur-md"
-      />
-      {particles.map((pt) => (
-        <motion.span
-          key={pt.id}
-          initial={{ x: 0, y: 0, opacity: 1, scale: 1 }}
-          animate={{ x: pt.x, y: pt.y, opacity: 0, scale: 0 }}
-          transition={{ duration: 0.9, ease: "easeOut" }}
-          className="absolute left-1/2 top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-bright"
+      {/* each piece below uses a plain, non-motion anchor div centered with
+          fixed negative margins (not `transform`) so Framer's own transform
+          tracking on the inner scale/x/y animation can never drop the
+          centering — the same gotcha fixed elsewhere in this component,
+          finally tracked down inside the burst itself */}
+      <div className="absolute left-1/2 top-1/2 -ml-12 -mt-12 h-24 w-24">
+        <motion.div
+          initial={{ scale: 0, opacity: 1 }}
+          animate={{ scale: 5, opacity: 0 }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="h-full w-full rounded-full bg-primary-bright"
         />
+      </div>
+      <div className="absolute left-1/2 top-1/2 -ml-12 -mt-12 h-24 w-24">
+        <motion.div
+          initial={{ scale: 0, opacity: 0.9 }}
+          animate={{ scale: 3.2, opacity: 0 }}
+          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+          className="h-full w-full rounded-full bg-white blur-md"
+        />
+      </div>
+      {particles.map((pt) => (
+        <div key={pt.id} className="absolute left-1/2 top-1/2 -ml-[3px] -mt-[3px] h-1.5 w-1.5">
+          <motion.span
+            initial={{ x: 0, y: 0, opacity: 1, scale: 1 }}
+            animate={{ x: pt.x, y: pt.y, opacity: 0, scale: 0 }}
+            transition={{ duration: 0.9, ease: "easeOut" }}
+            className="block h-full w-full rounded-full bg-primary-bright"
+          />
+        </div>
       ))}
     </>
   );
